@@ -1,12 +1,46 @@
-import { Controller, Get } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Post,
+  Put,
+} from '@nestjs/common';
 import UsersService from './users.service';
+import { User } from './types/users.interface';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdatePasswordDto } from './dto/update-user.dto';
 
-@Controller('users')
+@Controller('user')
 class UsersController {
   constructor(private usersService: UsersService) {}
   @Get()
-  async findAll() {
-    return this.usersService.getAll();
+  async findUsers() {
+    return this.usersService.getAllUsers();
+  }
+  @Get(':id')
+  async findUser(@Param('id', ParseUUIDPipe) id: string): Promise<User> {
+    return this.usersService.getUserById(id);
+  }
+
+  @Post()
+  async createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
+    return this.usersService.createUser(createUserDto);
+  }
+
+  @Put(':id')
+  async updateUser(
+    @Body() updatePasswordDto: UpdatePasswordDto,
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<User> {
+    return this.usersService.updateUserPassword(id, updatePasswordDto);
+  }
+
+  @Delete(':id')
+  async deleteUser(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
+    return this.usersService.deleteUser(id);
   }
 }
 
