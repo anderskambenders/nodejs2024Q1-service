@@ -4,25 +4,25 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { User } from './types/users.interface';
+import IUser from './types/users.interface';
 import { CreateUserDto } from './dto/create-user.dto';
 import { v4 } from 'uuid';
 import { UpdatePasswordDto } from './dto/update-user.dto';
 
 @Injectable()
 class UsersService {
-  private users: User[] = [];
+  private users: IUser[] = [];
 
-  public getAllUsers(): User[] {
+  public getAllUsers(): IUser[] {
     return this.users;
   }
-  public async getUserById(id: string): Promise<User> {
+  public async getUserById(id: string): Promise<IUser> {
     const user = this.users.find((user) => user.id === id);
     if (user) return user;
     throw new NotFoundException(`User with id ${id} not found`);
   }
 
-  public async createUser(user: CreateUserDto): Promise<User> {
+  public async createUser(user: CreateUserDto): Promise<IUser> {
     const newUser = {
       ...user,
       id: v4(),
@@ -37,7 +37,7 @@ class UsersService {
   public async updateUserPassword(
     id: string,
     { oldPassword, newPassword }: UpdatePasswordDto,
-  ): Promise<User> {
+  ): Promise<IUser> {
     const index = this.users.findIndex((item) => item.id === id);
     if (index < 0) throw new NotFoundException(`User with id ${id} not found`);
     const user = this.users[index];

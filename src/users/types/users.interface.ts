@@ -1,4 +1,4 @@
-export interface User {
+interface IUser {
   id: string;
   login: string;
   password: string;
@@ -6,3 +6,5 @@ export interface User {
   createdAt: number;
   updatedAt: number;
 }
+
+export default IUser;
