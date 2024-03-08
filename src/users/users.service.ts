@@ -4,25 +4,25 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import IUser from './types/users.interface';
+import { User } from './entities/users.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { v4 } from 'uuid';
 import { UpdatePasswordDto } from './dto/update-user.dto';
 
 @Injectable()
 class UsersService {
-  private users: IUser[] = [];
+  private users: User[] = [];
 
-  public getAllUsers(): IUser[] {
+  public getAllUsers(): User[] {
     return this.users;
   }
-  public async getUserById(id: string): Promise<IUser> {
+  public async getUserById(id: string): Promise<User> {
     const user = this.users.find((user) => user.id === id);
     if (user) return user;
     throw new NotFoundException(`User with id ${id} not found`);
   }
 
-  public async createUser(user: CreateUserDto): Promise<IUser> {
+  public async createUser(user: CreateUserDto): Promise<User> {
     const newUser = {
       ...user,
       id: v4(),
@@ -37,7 +37,7 @@ class UsersService {
   public async updateUserPassword(
     id: string,
     { oldPassword, newPassword }: UpdatePasswordDto,
-  ): Promise<IUser> {
+  ): Promise<User> {
     const index = this.users.findIndex((item) => item.id === id);
     if (index < 0) throw new NotFoundException(`User with id ${id} not found`);
     const user = this.users[index];
@@ -47,11 +47,12 @@ class UsersService {
     this.users[index] = {
       ...user,
       password: newPassword,
-      version: user.version++,
+      version: user.version + 1,
       updatedAt: Date.now(),
     };
     return this.users[index];
   }
+
   public async deleteUser(id: string): Promise<void> {
     const index = this.users.findIndex((item) => item.id === id);
     if (index < 0) throw new NotFoundException(`User with id ${id} not found`);
