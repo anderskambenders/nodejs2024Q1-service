@@ -50,25 +50,25 @@ class FavoritesService {
     );
   }
 
-  findOne(id: string) {
-    return this.tracksService.tracks.find((p) => p.id === id);
-  }
+  // findOne(id: string) {
+  //   return this.tracksService.tracks.find((p) => p.id === id);
+  // }
 
-  addTrack(id: string) {
-    if (this.tracksService.tracks.find((p) => p.id === id) === undefined) {
-      throw new HttpException(
-        'Track is not found',
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
-    }
-    const o = this.favorites.tracks.find((p) => p === id);
-    if (o !== undefined)
-      throw new HttpException(
-        'Track is already in favorites',
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
-    this.favorites.tracks.push(id);
-  }
+  // addTrack(id: string) {
+  //   if (this.tracksService.tracks.find((p) => p.id === id) === undefined) {
+  //     throw new HttpException(
+  //       'Track is not found',
+  //       HttpStatus.UNPROCESSABLE_ENTITY,
+  //     );
+  //   }
+  //   const o = this.favorites.tracks.find((p) => p === id);
+  //   if (o !== undefined)
+  //     throw new HttpException(
+  //       'Track is already in favorites',
+  //       HttpStatus.UNPROCESSABLE_ENTITY,
+  //     );
+  //   this.favorites.tracks.push(id);
+  // }
 
   addArtist(id: string) {
     if (this.artistsService.getArtistById(id) === undefined) {

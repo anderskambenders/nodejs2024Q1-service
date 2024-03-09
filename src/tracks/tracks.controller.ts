@@ -3,6 +3,9 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
+  NotFoundException,
   Param,
   ParseUUIDPipe,
   Post,
@@ -15,21 +18,23 @@ import UpdateTrackDto from './dto/update-track.dto';
 
 @Controller('track')
 export class TracksController {
-  constructor(private trackService: TracksService) {}
+  constructor(private tracksService: TracksService) {}
 
   @Get()
   async findTracks(): Promise<Track[]> {
-    return this.trackService.getTracks();
+    return this.tracksService.getTracks();
   }
 
   @Get(':id')
   async findTrack(@Param('id', ParseUUIDPipe) id: string): Promise<Track> {
-    return this.trackService.getTrackById(id);
+    const track = await this.tracksService.getTrackById(id);
+    if (track) return track;
+    throw new NotFoundException(`Track with id ${id} not found`);
   }
 
   @Post()
   async createTrack(@Body() createTrackDto: CreateTrackDto): Promise<Track> {
-    return this.trackService.createTrack(createTrackDto);
+    return this.tracksService.createTrack(createTrackDto);
   }
 
   @Put(':id')
@@ -37,12 +42,18 @@ export class TracksController {
     @Body() updateTrackDto: UpdateTrackDto,
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<Track> {
-    return this.trackService.updateTrack(id, updateTrackDto);
+    const trackToUpdate = await this.tracksService.updateTrack(
+      id,
+      updateTrackDto,
+    );
+    if (trackToUpdate) return trackToUpdate;
+    throw new NotFoundException(`Track with id ${id} not found`);
   }
 
   @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   async deleteTrack(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
-    return this.trackService.deleteTrack(id);
+    return this.tracksService.deleteTrack(id);
   }
 }
 
