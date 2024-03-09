@@ -6,6 +6,8 @@ import {
   Header,
   HttpCode,
   HttpStatus,
+  InternalServerErrorException,
+  NotFoundException,
   Param,
   ParseUUIDPipe,
   Post,
@@ -21,15 +23,17 @@ class UsersController {
   constructor(private usersService: UsersService) {}
   @Get()
   async findUsers() {
-    return this.usersService
-      .getAllUsers()
-      .map((user) => new UserResponse(user));
+    return (await this.usersService.getAllUsers()).map(
+      (user) => new UserResponse(user),
+    );
   }
   @Get(':id')
   async findUser(
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<UserResponse> {
-    return new UserResponse(await this.usersService.getUserById(id));
+    const user = await this.usersService.getUserById(id);
+    if (user) return user;
+    throw new NotFoundException(`User with id ${id} not found`);
   }
 
   @Post()
@@ -39,7 +43,9 @@ class UsersController {
   async createUser(
     @Body() createUserDto: CreateUserDto,
   ): Promise<UserResponse> {
-    return new UserResponse(await this.usersService.createUser(createUserDto));
+    const newUser = await this.usersService.createUser(createUserDto);
+    if (newUser) return new UserResponse(newUser);
+    throw new InternalServerErrorException('Something went wrong');
   }
 
   @Put(':id')
@@ -47,9 +53,12 @@ class UsersController {
     @Body() updatePasswordDto: UpdatePasswordDto,
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<UserResponse> {
-    return new UserResponse(
-      await this.usersService.updateUserPassword(id, updatePasswordDto),
+    const userToUpdate = await this.usersService.updateUserPassword(
+      id,
+      updatePasswordDto,
     );
+    if (userToUpdate) return new UserResponse(userToUpdate);
+    throw new NotFoundException(`User with id ${id} not found`);
   }
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')

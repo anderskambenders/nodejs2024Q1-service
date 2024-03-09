@@ -14,11 +14,11 @@ export class UserResponse {
   createdAt: number;
   updatedAt: number;
 
-  constructor(o: User) {
-    this.id = o.id;
-    this.login = o.login;
-    this.version = o.version;
-    this.createdAt = o.createdAt;
-    this.updatedAt = o.updatedAt;
+  constructor(user: User) {
+    this.id = user.id;
+    this.login = user.login;
+    this.version = user.version;
+    this.createdAt = user.createdAt;
+    this.updatedAt = user.updatedAt;
   }
 }

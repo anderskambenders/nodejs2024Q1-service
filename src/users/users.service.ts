@@ -1,9 +1,4 @@
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { User } from './entities/users.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { v4 } from 'uuid';
@@ -18,9 +13,12 @@ class UsersService {
     return this.dataService.getUsers();
   }
   public async getUserById(id: string): Promise<User> {
-    const user = this.dataService.getUserById(id);
-    if (user) return user;
-    throw new NotFoundException(`User with id ${id} not found`);
+    const user = await this.dataService.getUserById(id);
+    if (user) {
+      return user;
+    } else {
+      return undefined;
+    }
   }
 
   public async createUser(user: CreateUserDto): Promise<User> {
@@ -31,7 +29,7 @@ class UsersService {
       createdAt: Date.now(),
       updatedAt: Date.now(),
     };
-    this.users.push(newUser);
+    this.dataService.createUser(newUser);
     return newUser;
   }
 
@@ -39,25 +37,33 @@ class UsersService {
     id: string,
     { oldPassword, newPassword }: UpdatePasswordDto,
   ): Promise<User> {
-    const index = this.users.findIndex((item) => item.id === id);
-    if (index < 0) throw new NotFoundException(`User with id ${id} not found`);
-    const user = this.users[index];
-    if (user.password !== oldPassword) {
-      throw new HttpException('Wrong old password', HttpStatus.FORBIDDEN);
+    const user = await this.dataService.getUserById(id);
+    if (!user) return undefined;
+    if (user.password === oldPassword) {
+      const updatedUser = await this.dataService.updateUserPassword(id, {
+        oldPassword,
+        newPassword,
+      });
+      return updatedUser;
     }
-    this.users[index] = {
-      ...user,
-      password: newPassword,
-      version: user.version + 1,
-      updatedAt: Date.now(),
-    };
-    return this.users[index];
+    throw new HttpException('Wrong old password', HttpStatus.FORBIDDEN);
+    // const index = this.users.findIndex((item) => item.id === id);
+    // if (index < 0) throw new NotFoundException(`User with id ${id} not found`);
+    // const user = this.users[index];
+    // if (user.password !== oldPassword) {
+    //   throw new HttpException('Wrong old password', HttpStatus.FORBIDDEN);
+    // }
+    // this.users[index] = {
+    //   ...user,
+    //   password: newPassword,
+    //   version: user.version + 1,
+    //   updatedAt: Date.now(),
+    // };
+    // return this.users[index];
   }
 
   public async deleteUser(id: string): Promise<void> {
-    const index = this.users.findIndex((item) => item.id === id);
-    if (index < 0) throw new NotFoundException(`User with id ${id} not found`);
-    this.users.splice(index, 1);
+    await this.dataService.deleteUser(id);
   }
 }
 
