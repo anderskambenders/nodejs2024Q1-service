@@ -12,9 +12,7 @@ class ArtistsService {
   }
 
   public async getArtistById(id: string): Promise<IArtist> {
-    const artist = this.artists.find((artist) => artist.id === id);
-    if (artist) return artist;
-    throw new NotFoundException(`Artist with id ${id} not found`);
+    return this.artists.find((artist) => artist.id === id);
   }
 
   public async createArtist(artist: CreateArtistDto): Promise<IArtist> {

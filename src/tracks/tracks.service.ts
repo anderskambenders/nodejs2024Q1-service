@@ -6,7 +6,7 @@ import UpdateTrackDto from './dto/update-track.dto';
 
 @Injectable()
 class TracksService {
-  private tracks: ITrack[] = [];
+  public tracks: ITrack[] = [];
   public async getTracks(): Promise<ITrack[]> {
     return this.tracks;
   }

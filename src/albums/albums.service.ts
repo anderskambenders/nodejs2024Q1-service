@@ -12,9 +12,7 @@ class AlbumsService {
   }
 
   public async getAlbumById(id: string): Promise<IAlbum> {
-    const album = this.albums.find((album) => album.id === id);
-    if (album) return album;
-    throw new NotFoundException(`Album with id ${id} not found`);
+    return this.albums.find((album) => album.id === id);
   }
 
   public async createAlbum(album: CreateAlbumDto): Promise<IAlbum> {
