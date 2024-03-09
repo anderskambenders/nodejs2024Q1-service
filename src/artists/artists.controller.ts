@@ -3,6 +3,9 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
+  NotFoundException,
   Param,
   ParseUUIDPipe,
   Post,
@@ -24,10 +27,14 @@ class ArtistsController {
 
   @Get(':id')
   async findArtist(@Param('id', ParseUUIDPipe) id: string): Promise<IArtist> {
-    return this.artistService.getArtistById(id);
+    const artist = await this.artistService.getArtistById(id);
+    console.log(!!artist);
+    if (artist) return artist;
+    throw new NotFoundException(`Artist with id ${id} not found`);
   }
 
   @Post()
+  @HttpCode(HttpStatus.CREATED)
   async createArtist(
     @Body() createArtistDto: CreateArtistDto,
   ): Promise<IArtist> {
@@ -43,6 +50,7 @@ class ArtistsController {
   }
 
   @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   async deleteArtist(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     return this.artistService.deleteArtist(id);
   }

@@ -1,7 +1,7 @@
-interface IArtist {
+class Artist {
   id: string;
   name: string;
   grammy: boolean;
 }
 
-export default IArtist;
+export default Artist;
