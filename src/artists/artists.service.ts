@@ -44,7 +44,7 @@ class ArtistsService {
     const index = this.artists.findIndex((item) => item.id === id);
     if (index < 0)
       throw new NotFoundException(`Artist with id ${id} not found`);
-    this.artists.splice(index, 1);
+    this.artists = this.artists.filter((item) => item.id !== id);
   }
 }
 

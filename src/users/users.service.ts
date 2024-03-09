@@ -8,16 +8,17 @@ import { User } from './entities/users.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { v4 } from 'uuid';
 import { UpdatePasswordDto } from './dto/update-user.dto';
+import { DataService } from 'src/db/database.service';
 
 @Injectable()
 class UsersService {
-  private users: User[] = [];
+  constructor(private dataService: DataService) {}
 
-  public getAllUsers(): User[] {
-    return this.users;
+  public getAllUsers(): Promise<User[]> {
+    return this.dataService.getUsers();
   }
   public async getUserById(id: string): Promise<User> {
-    const user = this.users.find((user) => user.id === id);
+    const user = this.dataService.getUserById(id);
     if (user) return user;
     throw new NotFoundException(`User with id ${id} not found`);
   }

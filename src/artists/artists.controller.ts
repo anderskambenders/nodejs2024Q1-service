@@ -28,7 +28,6 @@ class ArtistsController {
   @Get(':id')
   async findArtist(@Param('id', ParseUUIDPipe) id: string): Promise<IArtist> {
     const artist = await this.artistService.getArtistById(id);
-    console.log(!!artist);
     if (artist) return artist;
     throw new NotFoundException(`Artist with id ${id} not found`);
   }

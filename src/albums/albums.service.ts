@@ -45,6 +45,11 @@ class AlbumsService {
     if (index < 0) throw new NotFoundException(`Album with id ${id} not found`);
     this.albums.splice(index, 1);
   }
+  removeArtistId(id: string) {
+    this.albums.forEach((o) => {
+      if (o.artistId === id) o.artistId = null;
+    });
+  }
 }
 
 export default AlbumsService;
