@@ -45,7 +45,9 @@ class ArtistsController {
     @Body() updateArtistDto: UpdateArtistDto,
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<IArtist> {
-    return this.artistService.updateArtist(id, updateArtistDto);
+    const artist = await this.artistService.updateArtist(id, updateArtistDto);
+    if (artist) return artist;
+    throw new NotFoundException(`Artist with id:${id} not found`);
   }
 
   @Delete(':id')

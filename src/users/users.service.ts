@@ -17,7 +17,7 @@ class UsersService {
     if (user) {
       return user;
     } else {
-      return undefined;
+      return;
     }
   }
 
@@ -38,7 +38,7 @@ class UsersService {
     { oldPassword, newPassword }: UpdatePasswordDto,
   ): Promise<User> {
     const user = await this.dataService.getUserById(id);
-    if (!user) return undefined;
+    if (!user) return;
     if (user.password === oldPassword) {
       const updatedUser = await this.dataService.updateUserPassword(id, {
         oldPassword,
@@ -47,19 +47,6 @@ class UsersService {
       return updatedUser;
     }
     throw new HttpException('Wrong old password', HttpStatus.FORBIDDEN);
-    // const index = this.users.findIndex((item) => item.id === id);
-    // if (index < 0) throw new NotFoundException(`User with id ${id} not found`);
-    // const user = this.users[index];
-    // if (user.password !== oldPassword) {
-    //   throw new HttpException('Wrong old password', HttpStatus.FORBIDDEN);
-    // }
-    // this.users[index] = {
-    //   ...user,
-    //   password: newPassword,
-    //   version: user.version + 1,
-    //   updatedAt: Date.now(),
-    // };
-    // return this.users[index];
   }
 
   public async deleteUser(id: string): Promise<void> {

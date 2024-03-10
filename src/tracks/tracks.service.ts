@@ -16,7 +16,7 @@ class TracksService {
   public async getTrackById(id: string): Promise<ITrack> {
     const track = await this.dataService.getTrackById(id);
     if (track) return track;
-    return undefined;
+    return;
   }
 
   public async createTrack(track: CreateTrackDto): Promise<ITrack> {
@@ -29,7 +29,7 @@ class TracksService {
     try {
       return await this.dataService.createTrack(newTrack);
     } catch {
-      return undefined;
+      return;
     }
   }
 
@@ -38,7 +38,7 @@ class TracksService {
     updateTrackDto: UpdateTrackDto,
   ): Promise<ITrack> {
     const track = await this.dataService.getTrackById(id);
-    if (!track) return undefined;
+    if (!track) return;
     return this.dataService.updateTrack(id, updateTrackDto);
   }
 

@@ -1,18 +1,20 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { v4 } from 'uuid';
 import CreateAlbumDto from './dto/create-album.dto';
 import UpdateAlbumDto from './dto/update-album.dto';
 import IAlbum from './types/album.interface';
+import { DataService } from 'src/db/database.service';
 
 @Injectable()
 class AlbumsService {
-  private albums: IAlbum[] = [];
+  constructor(private dataService: DataService) {}
   public async getAlbums(): Promise<IAlbum[]> {
-    return this.albums;
+    return this.dataService.getAlbums();
   }
 
   public async getAlbumById(id: string): Promise<IAlbum> {
-    return this.albums.find((album) => album.id === id);
+    const album = await this.dataService.getAlbumById(id);
+    if (album) return album;
   }
 
   public async createAlbum(album: CreateAlbumDto): Promise<IAlbum> {
@@ -21,34 +23,19 @@ class AlbumsService {
       artistId: null,
       ...album,
     };
-    this.albums.push(newAlbum);
-    return newAlbum;
+    return this.dataService.createAlbum(newAlbum);
   }
 
   public async updateAlbum(
     id: string,
     updateAlbumDto: UpdateAlbumDto,
   ): Promise<IAlbum> {
-    const index = this.albums.findIndex((item) => item.id === id);
-    if (index < 0) throw new NotFoundException(`Album with id ${id} not found`);
-
-    const album = this.albums[index];
-    album[index] = {
-      ...album,
-      ...updateAlbumDto,
-    };
-    return album[index];
+    const album = await this.dataService.getAlbumById(id);
+    if (album) return this.dataService.updateAlbum(id, updateAlbumDto);
   }
 
   public async deleteAlbum(id: string): Promise<void> {
-    const index = this.albums.findIndex((item) => item.id === id);
-    if (index < 0) throw new NotFoundException(`Album with id ${id} not found`);
-    this.albums.splice(index, 1);
-  }
-  removeArtistId(id: string) {
-    this.albums.forEach((o) => {
-      if (o.artistId === id) o.artistId = null;
-    });
+    return this.dataService.deleteAlbum(id);
   }
 }
 
