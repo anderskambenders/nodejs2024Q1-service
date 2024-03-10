@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { v4 } from 'uuid';
 import CreateArtistDto from './dto/create-artist.dto';
 import UpdateArtistDto from './dto/update-artist.dto';
-import IArtist from './types/artists.interface';
+import IArtist from './dto/artists.dto';
 import { DataService } from 'src/db/database.service';
 
 @Injectable()

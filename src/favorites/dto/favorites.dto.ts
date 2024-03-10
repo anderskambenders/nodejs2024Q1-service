@@ -1,5 +1,5 @@
-import IAlbum from 'src/albums/types/album.interface';
-import IArtist from 'src/artists/types/artists.interface';
+import IAlbum from 'src/albums/dto/album.dto';
+import IArtist from 'src/artists/dto/artists.dto';
 import ITrack from 'src/tracks/dto/tracks.dto';
 
 class FavoriteResponseDto {

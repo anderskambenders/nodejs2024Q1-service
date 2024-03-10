@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import Artist from 'src/artists/types/artists.interface';
+import Artist from 'src/artists/dto/artists.dto';
 import { User } from 'src/users/dto/users.dto';
-import IAlbum from 'src/albums/types/album.interface';
+import IAlbum from 'src/albums/dto/album.dto';
 import ITrack from 'src/tracks/dto/tracks.dto';
 import Favorite from 'src/favorites/types/favorite.type';
 import { UpdatePasswordDto } from 'src/users/dto/update-user.dto';
