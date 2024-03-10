@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import Artist from 'src/artists/types/artists.interface';
-import { User } from 'src/users/entities/users.entity';
+import { User } from 'src/users/dto/users.dto';
 import IAlbum from 'src/albums/types/album.interface';
 import ITrack from 'src/tracks/types/tracks.interface';
 import Favorite from 'src/favorites/types/favorite.type';

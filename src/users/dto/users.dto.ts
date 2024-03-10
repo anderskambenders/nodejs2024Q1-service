@@ -1,3 +1,5 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 export class User {
   id: string;
   login: string;
@@ -8,10 +10,15 @@ export class User {
 }
 
 export class UserResponse {
+  @ApiProperty({ type: 'string' })
   id: string;
+  @ApiProperty({ type: 'string' })
   login: string;
+  @ApiProperty({ type: 'integer' })
   version: number;
+  @ApiProperty({ type: 'integer' })
   createdAt: number;
+  @ApiProperty({ type: 'integer' })
   updatedAt: number;
 
   constructor(user: User) {
