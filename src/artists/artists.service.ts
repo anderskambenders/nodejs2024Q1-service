@@ -3,7 +3,7 @@ import { v4 } from 'uuid';
 import CreateArtistDto from './dto/create-artist.dto';
 import UpdateArtistDto from './dto/update-artist.dto';
 import IArtist from './dto/artists.dto';
-import { DataService } from 'src/db/database.service';
+import { DataService } from '../db/database.service';
 
 @Injectable()
 class ArtistsService {

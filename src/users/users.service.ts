@@ -3,7 +3,7 @@ import { User } from './dto/users.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { v4 } from 'uuid';
 import { UpdatePasswordDto } from './dto/update-user.dto';
-import { DataService } from 'src/db/database.service';
+import { DataService } from '../db/database.service';
 
 @Injectable()
 class UsersService {

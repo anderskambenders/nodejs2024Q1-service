@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import AlbumsController from './albums.controller';
 import AlbumsService from './albums.service';
-import { DataModule } from 'src/db/database.module';
+import { DataModule } from '../db/database.module';
 
 @Module({
   controllers: [AlbumsController],

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import FavoriteResponseDto from './dto/favorites.dto';
-import { DataService } from 'src/db/database.service';
+import { DataService } from '../db/database.service';
 
 @Injectable()
 class FavoritesService {

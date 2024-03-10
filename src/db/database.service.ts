@@ -1,13 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import Artist from 'src/artists/dto/artists.dto';
-import { User } from 'src/users/dto/users.dto';
-import IAlbum from 'src/albums/dto/album.dto';
-import ITrack from 'src/tracks/dto/tracks.dto';
-import Favorite from 'src/favorites/types/favorite.type';
-import { UpdatePasswordDto } from 'src/users/dto/update-user.dto';
-import UpdateTrackDto from 'src/tracks/dto/update-track.dto';
-import UpdateAlbumDto from 'src/albums/dto/update-album.dto';
-import UpdateArtistDto from 'src/artists/dto/update-artist.dto';
+import Artist from '../artists/dto/artists.dto';
+import { User } from '../users/dto/users.dto';
+import IAlbum from '../albums/dto/album.dto';
+import ITrack from '../tracks/dto/tracks.dto';
+import Favorite from '../favorites/types/favorite.type';
+import { UpdatePasswordDto } from '../users/dto/update-user.dto';
+import UpdateTrackDto from '../tracks/dto/update-track.dto';
+import UpdateAlbumDto from '../albums/dto/update-album.dto';
+import UpdateArtistDto from '../artists/dto/update-artist.dto';
 
 @Injectable()
 export class DataService {
