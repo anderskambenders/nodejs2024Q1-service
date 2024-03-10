@@ -1,130 +1,64 @@
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
-import Favorite from './types/favorite.type';
+import { Injectable } from '@nestjs/common';
 import FavoriteResponseDto from './dto/favorites.dto';
-import TracksService from 'src/tracks/tracks.service';
-import AlbumsService from 'src/albums/albums.service';
-import ArtistsService from 'src/artists/artists.service';
+import { DataService } from 'src/db/database.service';
 
 @Injectable()
 class FavoritesService {
-  private favorites: Favorite = new Favorite();
-  @Inject(TracksService)
-  private readonly tracksService: TracksService;
-  @Inject(AlbumsService)
-  private readonly albumsService: AlbumsService;
-  @Inject(ArtistsService)
-  private readonly artistsService: ArtistsService;
+  constructor(private dataService: DataService) {}
 
-  removeTrack(id: string) {
-    const o = this.favorites.tracks.find((p) => p === id);
-    if (o === undefined)
-      throw new HttpException('Not found', HttpStatus.NOT_FOUND);
-    this.favorites.tracks = this.favorites.tracks.filter((item) => item !== id);
+  async removeTrack(id: string) {
+    const track = await this.dataService.getTrackById(id);
+    if (!track) return;
+    await this.dataService.deleteTrackFromFavorites(id);
+    return true;
   }
 
-  removeAlbum(id: string) {
-    const o = this.favorites.albums.find((p) => p === id);
-    if (o === undefined)
-      throw new HttpException('Not found', HttpStatus.NOT_FOUND);
-
-    this.favorites.albums = this.favorites.albums.filter(
-      (item) => item !== id && item !== null,
-    );
+  async removeAlbum(id: string) {
+    const album = await this.dataService.getAlbumById(id);
+    if (!album) return undefined;
+    await this.dataService.deleteAlbumFromFavorites(id);
+    return true;
   }
 
-  removeAlbumIfExist(id: string) {
-    const o = this.favorites.albums.find((p) => p === id);
-    if (o === undefined) return;
-    this.favorites.albums = this.favorites.albums.filter(
-      (item) => item !== id && item !== null,
-    );
+  async removeArtist(id: string) {
+    const artist = await this.dataService.getArtistById(id);
+    if (!artist) return undefined;
+    await this.dataService.deleteArtistFromFavorites(id);
+    return true;
   }
 
-  removeArtist(id: string) {
-    const o = this.favorites.artists.find((p) => p === id);
-    if (o === undefined)
-      throw new HttpException('Not found', HttpStatus.NOT_FOUND);
-
-    this.favorites.artists = this.favorites.artists.filter(
-      (item) => item !== id && item !== null,
-    );
+  async addTrack(id: string) {
+    const track = await this.dataService.getTrackById(id);
+    return track ? this.dataService.addTrackToFavorites(id) : false;
   }
 
-  // findOne(id: string) {
-  //   return this.tracksService.tracks.find((p) => p.id === id);
-  // }
-
-  // addTrack(id: string) {
-  //   if (this.tracksService.tracks.find((p) => p.id === id) === undefined) {
-  //     throw new HttpException(
-  //       'Track is not found',
-  //       HttpStatus.UNPROCESSABLE_ENTITY,
-  //     );
-  //   }
-  //   const o = this.favorites.tracks.find((p) => p === id);
-  //   if (o !== undefined)
-  //     throw new HttpException(
-  //       'Track is already in favorites',
-  //       HttpStatus.UNPROCESSABLE_ENTITY,
-  //     );
-  //   this.favorites.tracks.push(id);
-  // }
-
-  addArtist(id: string) {
-    if (this.artistsService.getArtistById(id) === undefined) {
-      throw new HttpException(
-        'Artist is not found',
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
-    }
-
-    const o = this.favorites.artists.find((p) => p === id);
-    if (o !== undefined)
-      throw new HttpException(
-        'Track is already in artists',
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
-
-    this.favorites.artists.push(id);
+  async addArtist(id: string) {
+    const artist = await this.dataService.getArtistById(id);
+    return artist ? this.dataService.addArtistToFavorites(id) : false;
   }
 
-  addAlbum(id: string) {
-    if (this.albumsService.getAlbumById(id) === undefined) {
-      throw new HttpException(
-        'Album is not found',
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
-    }
-
-    const o = this.favorites.albums.find((p) => p === id);
-    if (o !== undefined)
-      throw new HttpException(
-        'Track is already in albums',
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
-
-    this.favorites.albums.push(id);
+  async addAlbum(id: string) {
+    const album = await this.dataService.getAlbumById(id);
+    return album ? this.dataService.addAlbumToFavorites(id) : false;
   }
 
-  async findAll(): Promise<FavoriteResponseDto> {
-    const result = new FavoriteResponseDto();
-    this.favorites.albums.forEach(async (o) => {
-      const x = this.albumsService.getAlbumById(o);
-      if (x !== null && x !== undefined) result.albums.push(await x);
-    });
-    result.artists = [];
-    this.favorites.artists.forEach(async (o) => {
-      const x = this.artistsService.getArtistById(o);
-      if (x !== null && x !== undefined) result.artists.push(await x);
-    });
-
-    result.tracks = [];
-    this.favorites.tracks.forEach(async (o) => {
-      const x = this.tracksService.getTrackById(o);
-      if (x !== null && x !== undefined) result.tracks.push(await x);
-    });
-
-    return result;
+  async getAll(): Promise<FavoriteResponseDto> {
+    const {
+      artists: artistsIds,
+      tracks: tracksIds,
+      albums: albumsIds,
+    } = await this.dataService.getFavorites();
+    return {
+      artists: await Promise.all(
+        artistsIds.map(async (id) => this.dataService.getArtistById(id)),
+      ),
+      tracks: await Promise.all(
+        tracksIds.map(async (id) => this.dataService.getTrackById(id)),
+      ),
+      albums: await Promise.all(
+        albumsIds.map(async (id) => this.dataService.getAlbumById(id)),
+      ),
+    };
   }
 }
 

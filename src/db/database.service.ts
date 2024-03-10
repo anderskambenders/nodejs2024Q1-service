@@ -225,7 +225,7 @@ export class DataService {
     return true;
   }
 
-  public async getFavs(): Promise<Favorite> {
+  public async getFavorites(): Promise<Favorite> {
     return this.favorites;
   }
 }
