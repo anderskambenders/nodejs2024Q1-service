@@ -13,6 +13,8 @@ services:
       - postgres:/var/lib/postgresql/data
     ports:
       - '${DB_PORT}:${DB_PORT}'
+    networks:
+      - nest_test
     env_file:
       - .env
     healthcheck:
@@ -22,6 +24,25 @@ services:
       retries: 5
       start_period: 10s
 
+  nest_test_pgadmin:
+    container_name: nest_test_pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: nest_test@admin.com
+      PGADMIN_DEFAULT_PASSWORD: nest_test
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - pgadmin:/var/www/nest_test/docker-volumes/pgadmin
+    ports:
+      - 127.0.0.1:5050:80
+    networks:
+      - nest_test
+    restart: unless-stopped
+
+networks:
+  nest_test:
+    driver: bridge
 
 volumes:
   postgres:
+  pgadmin:
