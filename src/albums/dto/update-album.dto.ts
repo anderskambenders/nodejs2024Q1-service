@@ -12,7 +12,7 @@ class UpdateAlbumDto {
   @IsOptional()
   @IsUUID()
   @ApiProperty({ type: 'string' })
-  artist?: string | null;
+  artistId?: string | null;
 }
 
 export default UpdateAlbumDto;
