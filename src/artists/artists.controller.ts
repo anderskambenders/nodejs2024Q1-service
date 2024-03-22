@@ -31,14 +31,14 @@ class ArtistsController {
 
   @Get()
   @ApiOkResponse({ description: 'All founded.' })
-  async findArtists(): Promise<IArtist[]> {
+  async findArtists() {
     return this.artistService.getArtists();
   }
 
   @Get(':id')
   @ApiNotFoundResponse({ description: 'Artist not found.' })
   @ApiOkResponse({ type: IArtist, description: 'Artist found.' })
-  async findArtist(@Param('id', ParseUUIDPipe) id: string): Promise<IArtist> {
+  async findArtist(@Param('id', ParseUUIDPipe) id: string) {
     const artist = await this.artistService.getArtistById(id);
     if (artist) return artist;
     throw new NotFoundException(`Artist with id ${id} not found`);
@@ -48,9 +48,7 @@ class ArtistsController {
   @HttpCode(HttpStatus.CREATED)
   @ApiCreatedResponse({ type: IArtist, description: 'Created artist.' })
   @ApiBadRequestResponse({ description: 'Body is incorrect.' })
-  async createArtist(
-    @Body() createArtistDto: CreateArtistDto,
-  ): Promise<IArtist> {
+  async createArtist(@Body() createArtistDto: CreateArtistDto) {
     return this.artistService.createArtist(createArtistDto);
   }
 
@@ -60,7 +58,7 @@ class ArtistsController {
   async updateArtist(
     @Body() updateArtistDto: UpdateArtistDto,
     @Param('id', ParseUUIDPipe) id: string,
-  ): Promise<IArtist> {
+  ) {
     const artist = await this.artistService.updateArtist(id, updateArtistDto);
     if (artist) return artist;
     throw new NotFoundException(`Artist with id:${id} not found`);

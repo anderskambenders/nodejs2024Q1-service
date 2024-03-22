@@ -1,7 +1,12 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { User } from '@prisma/client';
 import { CreateUserDto } from './dto/create-user.dto';
-import { v4 } from 'uuid';
+// import { v4 } from 'uuid';
 import { UpdatePasswordDto } from './dto/update-user.dto';
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -26,14 +31,7 @@ class UsersService {
   }
 
   public async createUser(user: CreateUserDto) {
-    const newUser = {
-      ...user,
-      id: v4(),
-      version: 1,
-      createdAt: String(Date.now()),
-      updatedAt: String(Date.now()),
-    };
-    const userToDb = await this.prismaDB.user.create({ data: newUser });
+    const userToDb = await this.prismaDB.user.create({ data: user });
     return this.formatUser(userToDb);
   }
 
@@ -61,6 +59,8 @@ class UsersService {
   }
 
   public async deleteUser(id: string): Promise<void> {
+    const user = await this.prismaDB.user.findUnique({ where: { id } });
+    if (!user) throw new NotFoundException(`User with id ${id} not found`);
     await this.prismaDB.user.delete({
       where: { id },
     });

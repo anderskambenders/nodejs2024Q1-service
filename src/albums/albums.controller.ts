@@ -32,14 +32,14 @@ class AlbumsController {
 
   @Get()
   @ApiOkResponse({ description: 'All founded.' })
-  async findAlbums(): Promise<IAlbum[]> {
+  async findAlbums() {
     return this.albumService.getAlbums();
   }
 
   @Get(':id')
   @ApiNotFoundResponse({ description: 'Album not found.' })
   @ApiOkResponse({ type: IAlbum, description: 'Album found.' })
-  async findAlbum(@Param('id', ParseUUIDPipe) id: string): Promise<IAlbum> {
+  async findAlbum(@Param('id', ParseUUIDPipe) id: string) {
     const album = await this.albumService.getAlbumById(id);
     if (!album) throw new NotFoundException(`Album with id ${id} not found`);
     return album;
@@ -48,7 +48,7 @@ class AlbumsController {
   @Post()
   @ApiCreatedResponse({ type: Album, description: 'Created album.' })
   @ApiBadRequestResponse({ description: 'Body is incorrect.' })
-  async createAlbum(@Body() createAlbumDto: CreateAlbumDto): Promise<IAlbum> {
+  async createAlbum(@Body() createAlbumDto: CreateAlbumDto) {
     return this.albumService.createAlbum(createAlbumDto);
   }
 
@@ -58,7 +58,7 @@ class AlbumsController {
   async updateAlbum(
     @Body() updateAlbumDto: UpdateAlbumDto,
     @Param('id', ParseUUIDPipe) id: string,
-  ): Promise<IAlbum> {
+  ) {
     const album = await this.albumService.updateAlbum(id, updateAlbumDto);
     if (!album) throw new NotFoundException(`Album with id ${id} not found`);
     return album;

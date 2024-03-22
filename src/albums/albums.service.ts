@@ -68,6 +68,8 @@ class AlbumsService {
   }
 
   public async deleteAlbum(id: string): Promise<void> {
+    const album = await this.prismaDB.album.findUnique({ where: { id } });
+    if (!album) throw new NotFoundException(`Album with id ${id} not found`);
     await this.prismaDB.album.delete({
       where: {
         id: id,

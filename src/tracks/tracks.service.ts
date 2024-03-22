@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { v4 } from 'uuid';
 import ITrack from './dto/tracks.dto';
 import CreateTrackDto from './dto/create-track.dto';
@@ -42,6 +42,8 @@ class TracksService {
     id: string,
     updateTrackDto: UpdateTrackDto,
   ): Promise<ITrack> {
+    const target = await this.prismaDB.track.findUnique({ where: { id } });
+    if (!target) throw new NotFoundException(`Track with id ${id} not found`);
     const track = await this.prismaDB.track.update({
       where: { id },
       data: updateTrackDto,
@@ -51,6 +53,8 @@ class TracksService {
   }
 
   public async deleteTrack(id: string): Promise<void> {
+    const track = await this.prismaDB.track.findUnique({ where: { id } });
+    if (!track) throw new NotFoundException(`Track with id ${id} not found`);
     await this.prismaDB.track.delete({ where: { id } });
   }
 
