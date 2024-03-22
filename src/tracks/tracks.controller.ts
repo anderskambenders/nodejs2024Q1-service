@@ -31,14 +31,14 @@ export class TracksController {
 
   @Get()
   @ApiOkResponse({ description: 'All founded.' })
-  async findTracks(): Promise<Track[]> {
+  async findTracks() {
     return this.tracksService.getTracks();
   }
 
   @Get(':id')
   @ApiNotFoundResponse({ description: 'Track not found.' })
   @ApiOkResponse({ type: Track, description: 'Track found.' })
-  async findTrack(@Param('id', ParseUUIDPipe) id: string): Promise<Track> {
+  async findTrack(@Param('id', ParseUUIDPipe) id: string) {
     const track = await this.tracksService.getTrackById(id);
     if (track) return track;
     throw new NotFoundException(`Track with id ${id} not found`);

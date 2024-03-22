@@ -3,19 +3,23 @@ import { v4 } from 'uuid';
 import ITrack from './dto/tracks.dto';
 import CreateTrackDto from './dto/create-track.dto';
 import UpdateTrackDto from './dto/update-track.dto';
-import { DataService } from '../prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
+import { Track } from '@prisma/client';
 
 @Injectable()
 class TracksService {
-  constructor(private dataService: DataService) {}
+  constructor(private prismaDB: PrismaService) {}
 
-  public async getTracks(): Promise<ITrack[]> {
-    return this.dataService.getTracks();
+  public async getTracks() {
+    const tracks = await this.prismaDB.track.findMany();
+    return tracks.map((track) => this.formatTrack(track));
   }
 
-  public async getTrackById(id: string): Promise<ITrack> {
-    const track = await this.dataService.getTrackById(id);
-    if (track) return track;
+  public async getTrackById(id: string) {
+    const track = await this.prismaDB.track.findUnique({
+      where: { id },
+    });
+    if (track) return this.formatTrack(track);
     return;
   }
 
@@ -27,7 +31,8 @@ class TracksService {
       ...track,
     };
     try {
-      return await this.dataService.createTrack(newTrack);
+      const track = await this.prismaDB.track.create({ data: newTrack });
+      return this.formatTrack(track) as Track;
     } catch {
       return;
     }
@@ -37,13 +42,22 @@ class TracksService {
     id: string,
     updateTrackDto: UpdateTrackDto,
   ): Promise<ITrack> {
-    const track = await this.dataService.getTrackById(id);
+    const track = await this.prismaDB.track.update({
+      where: { id },
+      data: updateTrackDto,
+    });
     if (!track) return;
-    return this.dataService.updateTrack(id, updateTrackDto);
+    return track;
   }
 
   public async deleteTrack(id: string): Promise<void> {
-    await this.dataService.deleteTrack(id);
+    await this.prismaDB.track.delete({ where: { id } });
+  }
+
+  formatTrack(track: Track) {
+    return Object.fromEntries(
+      Object.entries(track).filter(([key]) => !['isFavorite'].includes(key)),
+    );
   }
 }
 

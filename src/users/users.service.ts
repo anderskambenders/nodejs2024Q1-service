@@ -5,12 +5,6 @@ import { v4 } from 'uuid';
 import { UpdatePasswordDto } from './dto/update-user.dto';
 import { PrismaService } from '../prisma/prisma.service';
 
-function excludeField(object: Record<string, any>, keys: string[]) {
-  return Object.fromEntries(
-    Object.entries(object).filter(([key]) => !keys.includes(key)),
-  );
-}
-
 @Injectable()
 class UsersService {
   constructor(private prismaDB: PrismaService) {}
@@ -67,10 +61,14 @@ class UsersService {
   }
 
   public async deleteUser(id: string): Promise<void> {
-    await this.dataService.deleteUser(id);
+    await this.prismaDB.user.delete({
+      where: { id },
+    });
   }
   formatUser(user: User) {
-    const newUser = excludeField(user, ['password']);
+    const newUser = Object.fromEntries(
+      Object.entries(user).filter(([key]) => !['password'].includes(key)),
+    );
     return {
       ...newUser,
       createdAt: new Date(newUser.createdAt).getTime(),
