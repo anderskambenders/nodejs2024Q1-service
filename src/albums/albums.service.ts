@@ -3,7 +3,7 @@ import { v4 } from 'uuid';
 import CreateAlbumDto from './dto/create-album.dto';
 import UpdateAlbumDto from './dto/update-album.dto';
 import IAlbum from './dto/album.dto';
-import { DataService } from '../db/database.service';
+import { DataService } from '../prisma/prisma.service';
 
 @Injectable()
 class AlbumsService {

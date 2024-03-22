@@ -5,8 +5,8 @@ export class User {
   login: string;
   password: string;
   version: number;
-  createdAt: number;
-  updatedAt: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export class UserResponse {
@@ -16,10 +16,10 @@ export class UserResponse {
   login: string;
   @ApiProperty({ type: 'integer' })
   version: number;
-  @ApiProperty({ type: 'integer' })
-  createdAt: number;
-  @ApiProperty({ type: 'integer' })
-  updatedAt: number;
+  @ApiProperty({ type: 'Date' })
+  createdAt: Date;
+  @ApiProperty({ type: 'Date' })
+  updatedAt: Date;
 
   constructor(user: User) {
     this.id = user.id;

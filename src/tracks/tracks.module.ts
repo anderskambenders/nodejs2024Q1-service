@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TracksController } from './tracks.controller';
 import TracksService from './tracks.service';
-import { DataModule } from '../db/database.module';
+import { DataModule } from '../prisma/prisma.module';
 
 @Module({
   controllers: [TracksController],
