@@ -1,5 +1,23 @@
 version: '3.8'
 services:
+  app:
+    image: anderskambenders/nodejs2024q1-service-app
+    restart: always
+    build:
+      context: .
+    ports:
+      - ${PORT}:${PORT}
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+    networks:
+      - nodejs2024q1
+    volumes:
+      - ./:/usr/app
+      - /usr/app/node_modules
+    command: ["npm", "run", "migrate:start:dev"]
+
   postgres:
     image: postgres:13.5
     restart: always
@@ -14,7 +32,7 @@ services:
     ports:
       - '${DB_PORT}:${DB_PORT}'
     networks:
-      - nest_test
+      - nodejs2024q1
     env_file:
       - .env
     healthcheck:
@@ -36,11 +54,11 @@ services:
     ports:
       - 127.0.0.1:5050:80
     networks:
-      - nest_test
+      - nodejs2024q1
     restart: unless-stopped
 
 networks:
-  nest_test:
+  nodejs2024q1:
     driver: bridge
 
 volumes:
