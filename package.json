@@ -20,7 +20,11 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "migrate:start:dev": "prisma migrate deploy && nest start --watch"
+    "migrate:start:dev": "prisma migrate deploy && nest start --watch",
+    "docker:scan": "docker scout cves postgres:13.5 && docker scout cves anderskambenders/nodejs2024q1-service-app",
+    "docker:scan:postgres": "docker scout cves postgres:13.5",
+    "docker:scan:app": "docker scout cves anderskambenders/nodejs2024q1-service-app",
+    "docker:build:up": "docker-compose up -d --build"
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",
