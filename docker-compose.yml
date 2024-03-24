@@ -19,8 +19,12 @@ services:
     command: ["npm", "run", "migrate:start:dev"]
 
   postgres:
-    image: postgres:13.5
+    container_name: nodejs2024q1-service-db
+    image: anderskambenders/nodejs2024q1-service-db
     restart: always
+    build:
+      context: .
+      dockerfile: ./db.Dockerfile
     environment:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
@@ -42,10 +46,9 @@ services:
       retries: 5
       start_period: 10s
 
+volumes:
+  postgres:
+
 networks:
   nodejs2024q1:
     driver: bridge
-
-volumes:
-  postgres:
-  pgadmin:
