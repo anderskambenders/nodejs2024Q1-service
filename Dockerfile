@@ -1,13 +1,6 @@
-FROM node:18-alpine
-
-WORKDIR /usr/app
-
-COPY package.json package-lock.json ./
-
-RUN npm install --production && npm cache clean --force
-
+FROM node:20.11-alpine
+WORKDIR /app
 COPY . .
-
-RUN npx prisma generate
-
+RUN npm ci && npm cache clean --force
 EXPOSE 4000
+CMD ["npm", "run", "start:migration:dev"]
