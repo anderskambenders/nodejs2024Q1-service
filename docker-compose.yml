@@ -1,0 +1,54 @@
+version: '3.8'
+services:
+  app:
+    image: anderskambenders/nodejs2024q1-service-app
+    restart: always
+    build:
+      context: .
+    ports:
+      - ${PORT}:${PORT}
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+    networks:
+      - nodejs2024q1
+    volumes:
+      - ./:/usr/app
+      - /usr/app/node_modules
+    command: ["npm", "run", "migrate:start:dev"]
+
+  postgres:
+    container_name: nodejs2024q1-service-db
+    image: anderskambenders/nodejs2024q1-service-db
+    restart: always
+    build:
+      context: .
+      dockerfile: ./db.Dockerfile
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    command: ["postgres", "-c", "logging_collector=true", "-c", "log_statement=all"]
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    ports:
+      - '${DB_PORT}:${DB_PORT}'
+    networks:
+      - nodejs2024q1
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U adminuser -d homelibdb"]
+      interval: 1m30s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  postgres:
+
+networks:
+  nodejs2024q1:
+    driver: bridge

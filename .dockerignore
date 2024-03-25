@@ -1,0 +1,15 @@
+data/
+logs/
+npm-debug.log
+Dockerfile
+.git
+.gitignore
+.dockerignore
+.DS_Store
+node_modules
+dist
+/dist
+.eslint*
+.prettier*
+docker-compose.yml
+README.md
